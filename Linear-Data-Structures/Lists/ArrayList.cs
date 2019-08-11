@@ -65,14 +65,25 @@ public class ArrayList<T>
         }
 
         T element = this.data[index];
-
         for (int i = index; i < Count; i++)
         {
             this.data[i] = data[i + 1];
         }
 
         Count--;
+        if (Count <= this.data.Length / 4)
+        {
+            this.Shrink();
+        }
+        
         return element;
+    }
+
+    private void Shrink()
+    {
+        T[] newArray = new T[this.data.Length / 2];
+        Array.Copy(this.data, newArray,this.Count);
+        this.data = newArray;
     }
 
     public void PrintArrayList()
