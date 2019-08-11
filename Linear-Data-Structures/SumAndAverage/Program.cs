@@ -7,9 +7,9 @@
         public static void Main()
         {
             var list = Console.ReadLine().Split().Select(int.Parse).ToList();
-            var sum = list.Sum();
+            var sumElements = list.Sum();
             var average = list.Average();
-            Console.WriteLine($"Sum={sum}; Average={average:F2}");
+            Console.WriteLine($"Sum={sumElements}; Average={average:F2}");
         }
     }
 }
