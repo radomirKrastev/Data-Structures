@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 
 public class ArrayStack<T>
 {
@@ -18,6 +17,7 @@ public class ArrayStack<T>
         {
             Grow();
         }
+
         this.elements[this.Count] = element;
         this.Count++;
     }
@@ -26,18 +26,24 @@ public class ArrayStack<T>
     {
         if (this.Count == 0)
         {
-            throw new InvalidOperationException();
+            throw new InvalidOperationException("Stack is empty!");
         }
 
-        var element = elements[this.Count];
         this.Count--;
-        return element;
+        return this.elements[Count];
     }
 
     public T[] ToArray()
     {
         var arr = new T[this.Count];
-        Array.Copy(this.elements, arr, this.Count);
+        var arrIndex = 0;
+        var elementsIndex = this.Count - 1;
+
+        for (int i = 0; i < this.Count; i++)
+        {
+            arr[arrIndex++] = elements[elementsIndex--];
+        }
+
         return arr;
     }
 
@@ -54,9 +60,16 @@ public class Launcher
     public static void Main()
     {
         ArrayStack<int> arr = new ArrayStack<int>();
-        arr.Push(1);
-        arr.Push(3);
-        arr.Push(2);
-        System.Console.WriteLine(string.Join(" ", arr.ToArray()));
+        arr.Push(7);
+        arr.Push(8);
+        arr.Push(9);
+        Console.WriteLine(arr.Count);
+        var item = arr.Pop();
+        Console.WriteLine(item);
+        var item1 = arr.Pop();
+        Console.WriteLine(item);
+        var item2 = arr.Pop();
+        Console.WriteLine(string.Join(" ", arr.ToArray()));
     }
 }
+
