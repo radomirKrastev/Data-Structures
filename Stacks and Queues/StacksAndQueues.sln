@@ -7,11 +7,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MatchingBrackets", "Matchin
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LinkedStack", "LinkedStack\LinkedStack.csproj", "{860531FA-0932-4424-931D-44F214F25492}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ReverseNumbersWithStack", "ReverseNumbersWithStack\ReverseNumbersWithStack.csproj", "{E7EBA502-B85B-4D72-B2AB-E157E30D91E6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ReverseNumbersWithStack", "ReverseNumbersWithStack\ReverseNumbersWithStack.csproj", "{E7EBA502-B85B-4D72-B2AB-E157E30D91E6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculateSequenceWithQueue", "CalculateSequenceWithQueue\CalculateSequenceWithQueue.csproj", "{9F922CEA-A210-4E94-A6F9-E838CB137931}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalculateSequenceWithQueue", "CalculateSequenceWithQueue\CalculateSequenceWithQueue.csproj", "{9F922CEA-A210-4E94-A6F9-E838CB137931}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculateSequenceWithQueueAnother", "CalculateSequenceWithQueueAnother\CalculateSequenceWithQueueAnother.csproj", "{BA7F781B-918D-491A-BACB-A46825EE9B97}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CalculateSequenceWithQueueAnother", "CalculateSequenceWithQueueAnother\CalculateSequenceWithQueueAnother.csproj", "{BA7F781B-918D-491A-BACB-A46825EE9B97}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SequenceN-M", "SequenceN-M\SequenceN-M.csproj", "{9B184B25-31E4-474B-9D35-3BCF5A6C1CEC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{BA7F781B-918D-491A-BACB-A46825EE9B97}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA7F781B-918D-491A-BACB-A46825EE9B97}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA7F781B-918D-491A-BACB-A46825EE9B97}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B184B25-31E4-474B-9D35-3BCF5A6C1CEC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B184B25-31E4-474B-9D35-3BCF5A6C1CEC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B184B25-31E4-474B-9D35-3BCF5A6C1CEC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B184B25-31E4-474B-9D35-3BCF5A6C1CEC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
