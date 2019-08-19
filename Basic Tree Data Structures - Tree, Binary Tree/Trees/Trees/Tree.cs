@@ -37,11 +37,36 @@ public class Tree<T>
 
     public IEnumerable<T> OrderDFS()
     {
-        throw new NotImplementedException();
+        var result = new List<T>();
+        this.DFS(this,result);
+        return result;
+    }
+
+    private void DFS(Tree<T> tree, List<T> result)
+    {
+        foreach (var child in tree.Children)
+        {
+            this.DFS(child, result);
+        }
+
+        result.Add(tree.Value);
     }
 
     public IEnumerable<T> OrderBFS()
     {
-        throw new NotImplementedException();
+        Queue<Tree<T>> queue = new Queue<Tree<T>>();
+        queue.Enqueue(this);
+        var result = new List<T>();
+        while (queue.Count > 0)
+        {
+            var currentNode = queue.Dequeue();
+            result.Add(currentNode.Value);
+            foreach (var child in currentNode.Children)
+            {
+                queue.Enqueue(child);
+            }
+        }
+
+        return result;
     }
 }
