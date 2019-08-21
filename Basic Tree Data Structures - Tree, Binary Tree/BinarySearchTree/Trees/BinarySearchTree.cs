@@ -115,7 +115,28 @@ public class BinarySearchTree<T> where T : IComparable<T>
 
     public void DeleteMin()
     {
-        throw new NotImplementedException();
+        if (this.root == null)
+        {
+            return;
+        }
+
+        Node parent = null;
+        Node min = this.root;
+
+        while (min.Left != null)
+        {
+            parent = min;
+            min = min.Left;
+        }
+
+        if (parent == null)
+        {
+            this.root = min.Right;
+        }
+        else
+        {
+            parent.Left = min.Right;
+        }        
     }
 
     public BinarySearchTree<T> Search(T item)
@@ -142,7 +163,35 @@ public class BinarySearchTree<T> where T : IComparable<T>
 
     public IEnumerable<T> Range(T startRange, T endRange)
     {
-        throw new NotImplementedException();
+        Queue<T> queue = new Queue<T>();
+        Range(this.root, queue, startRange, endRange);
+        return queue;
+    }
+
+    private void Range (Node node, Queue<T> queue, T startRange, T endRange)
+    {
+        if(node == null)
+        {
+            return;
+        }
+
+        var lowerRange = startRange.CompareTo(node.Value);
+        var higherRange = endRange.CompareTo(node.Value);
+
+        if (lowerRange < 0)
+        {
+            Range(node.Left, queue, startRange, endRange);
+        }
+
+        if(lowerRange<=0 && higherRange >= 0)
+        {
+            queue.Enqueue(node.Value);
+        }
+
+        if (higherRange > 0)
+        {
+            Range(node.Right, queue, startRange, endRange);
+        }
     }
 
     public void EachInOrder(Action<T> action)
