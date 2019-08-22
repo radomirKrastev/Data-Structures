@@ -20,6 +20,7 @@ namespace TreeFunctions
             }
 
             tree.Print();
+            Console.WriteLine(string.Join(" ", tree.FindLeafs()));
         }
 
         public class Tree<T> where T : IComparable<T>
@@ -55,6 +56,30 @@ namespace TreeFunctions
                 {
                     Print(indent + 1, child);
                 }
+            }
+
+            public IEnumerable<T> FindLeafs()
+            {
+                var leafs = new List<T>();
+
+                Queue<Node> queue = new Queue<Node>();
+                Node current = null;
+                queue.Enqueue(root);
+                while (queue.Count > 0)
+                {
+                    current = queue.Dequeue();
+                    if (current.Children.Count==0)
+                    {
+                        leafs.Add(current.Value);
+                    }
+
+                    foreach (var child in current.Children)
+                    {
+                        queue.Enqueue(child);
+                    }
+                }
+
+                return leafs.OrderBy(x=>x);
             }
 
             public void Insert(T value, T parent)
