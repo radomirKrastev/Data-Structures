@@ -2,200 +2,232 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace TreeFunctions
+public class Program
 {
-    public class Program
+    public static void Main()
     {
-        public static void Main()
+        var commands = int.Parse(Console.ReadLine());
+        Tree<int> tree = new Tree<int>();
+
+        for (int i = 0; i < commands - 1; i++)
         {
-            var commands = int.Parse(Console.ReadLine());
-            Tree<int> tree = new Tree<int>();
+            var edge = Console.ReadLine().Split().Select(int.Parse).ToArray();
+            tree.Insert(edge[1], edge[0]);
 
-            for (int i = 0; i < commands - 1; i++)
-            {
-                var edge = Console.ReadLine().Split().Select(int.Parse).ToArray();
-                tree.Insert(edge[1], edge[0]);
-
-                Console.WriteLine();
-            }
-
-            tree.Print();
-            Console.WriteLine(string.Join(" ", tree.FindLeafs()));
-            Console.WriteLine(string.Join(" ", tree.FindMiddle()));
-            Console.WriteLine(string.Join(" ", tree.LongestPath()));
-            Console.WriteLine(tree.DeepestNode());
+            Console.WriteLine();
         }
 
-        public class Tree<T> where T : IComparable<T>
+        tree.Print();
+        Console.WriteLine(string.Join(" ", tree.FindLeafs()));
+        Console.WriteLine(string.Join(" ", tree.FindMiddle()));
+        Console.WriteLine(string.Join(" ", tree.LongestPath()));
+        Console.WriteLine(tree.DeepestNode());
+        var sum = int.Parse(Console.ReadLine());
+        tree.AllPathsEqualToSum(sum);
+    }
+
+    public class Tree<T> where T : IComparable<T>
+    {
+        public T rootValue { get; private set; }
+        private Node current;
+        private Node root { get; set; }
+        public int Count { get; set; }
+
+        private class Node
         {
-            public T rootValue { get; private set; }
-            private Node current;
-            private Node root { get; set; }
-            public int Count { get; set; }
-
-            private class Node
+            public Node Parent { get; set; }
+            public T Value { get; set; }
+            public List<Node> Children { get; set; }
+            public Node(T value)
             {
-                public Node Parent { get; set; }
-                public T Value { get; set; }
-                public List<Node> Children { get; set; }
-                public Node(T value)
+                this.Value = value;
+                this.Children = new List<Node>();
+                this.Parent = null;
+            }
+        }
+
+        public void Print(int indent = 0)
+        {
+            Print(indent, this.root);
+        }
+
+        private void Print(int indent, Node root)
+        {
+            Console.Write(new string(' ', 2 * indent));
+            Console.WriteLine(root.Value);
+            foreach (var child in root.Children)
+            {
+                Print(indent + 1, child);
+            }
+        }
+
+        public void AllPathsEqualToSum(int sum)
+        {
+            var leafs = QueueHelper("leaf");
+
+            foreach (var leaf in leafs)
+            {
+                Queue<Node> queue = new Queue<Node>();
+                var current = leaf;
+                var collection = new List<int>() { int.Parse((current.Value.ToString())) };
+                queue.Enqueue(current);
+                while (queue.Count > 0 && current.Parent != null)
                 {
-                    this.Value = value;
-                    this.Children = new List<Node>();
-                    this.Parent = null;
-                }
-            }
-
-            public void Print(int indent = 0)
-            {
-                Print(indent, this.root);
-            }
-
-            private void Print(int indent, Node root)
-            {
-                Console.Write(new string(' ', 2 * indent));
-                Console.WriteLine(root.Value);
-                foreach (var child in root.Children)
-                {
-                    Print(indent + 1, child);
-                }
-            }
-
-            public T DeepestNode()
-            {
-                var collection = LongestPath();
-                var deepestNode = collection.Last();
-                return deepestNode;
-            }
-
-            public IEnumerable<T> LongestPath()
-            {
-                var longestPath = new List<T>();
-                var deepestNodeCount = int.MinValue;
-                var leafs = QueueHelper("leaf");
-
-                foreach (var leaf in leafs)
-                {   
-                    var counter = 0;
-                    Queue<Node> queue = new Queue<Node>();
-                    var current = leaf;
-                    var collection = new List<T>() { current.Value };
+                    current = queue.Dequeue().Parent;
+                    collection.Add(int.Parse((current.Value.ToString())));
                     queue.Enqueue(current);
-                    while (queue.Count > 0 && current.Parent!=null)
-                    {
-                        counter++;
-                        current = queue.Dequeue().Parent;
-                        collection.Add(current.Value);
-                        queue.Enqueue(current);
-                    }
-
-                    if (counter > deepestNodeCount)
-                    {
-                        longestPath = collection;
-                        deepestNodeCount = counter;
-                    }
                 }
 
-                longestPath.Reverse();
-                return longestPath;
+                if (collection.Sum()==sum)
+                {
+                    collection.Reverse();
+                    Console.WriteLine(string.Join(" ", collection));
+                }
             }
 
-            private IEnumerable<Node> QueueHelper(string condition)
-            {
-                var collection = new List<Node>();
+            return;
+        }
 
+        //private IEnumerable<T> AllPaths (int sum, List<List<T>> allPaths, Node root, List<T> path)
+        //{
+        //    if(path.Sum())
+        //}
+
+        public T DeepestNode()
+        {
+            var collection = LongestPath();
+            var deepestNode = collection.Last();
+            return deepestNode;
+        }
+
+        public IEnumerable<T> LongestPath()
+        {
+            var longestPath = new List<T>();
+            var deepestNodeCount = int.MinValue;
+            var leafs = QueueHelper("leaf");
+
+            foreach (var leaf in leafs)
+            {
+                var counter = 0;
                 Queue<Node> queue = new Queue<Node>();
-                Node current = null;
-                queue.Enqueue(root);
-                while (queue.Count > 0)
+                var current = leaf;
+                var collection = new List<T>() { current.Value };
+                queue.Enqueue(current);
+                while (queue.Count > 0 && current.Parent != null)
                 {
-                    current = queue.Dequeue();
-                    if (condition == "middle")
-                    {
-                        if (current.Children.Count > 0 && current.Parent != null)
-                        {
-                            collection.Add(current);
-                        }
-                    }
-                    else if(condition == "leaf")
-                    {
-                        if (current.Children.Count == 0)
-                        {
-                            collection.Add(current);
-                        }
-                    }
-
-                    foreach (var child in current.Children)
-                    {
-                        queue.Enqueue(child);
-                    }
+                    counter++;
+                    current = queue.Dequeue().Parent;
+                    collection.Add(current.Value);
+                    queue.Enqueue(current);
                 }
 
-                return collection;
-            }
-
-            public IEnumerable<T> FindMiddle()
-            {
-                string condition = "middle";
-                var list = QueueHelper(condition).Select(x=>x.Value);
-                return list.OrderBy(x=>x);
-            }
-
-            public IEnumerable<T> FindLeafs()
-            {
-                string condition = "leaf";
-                var list = QueueHelper(condition).Select(x=>x.Value);
-                return list;//.OrderBy(x => x);
-            }
-
-            public void Insert(T value, T parent)
-            {
-                var node = Contains(this.root, parent);
-                if (node == null)
+                if (counter > deepestNodeCount)
                 {
-                    this.rootValue = parent;
-                    this.current = new Node(parent);
-                    this.root = current;
-                    Link(current, value);
-                }
-                else
-                {
-                    Link(node, value);
+                    longestPath = collection;
+                    deepestNodeCount = counter;
                 }
             }
 
-            private Node Contains(Node root, T parent)
-            {
-                Queue<Node> queue = new Queue<Node>();
-                Node current = null;
-                queue.Enqueue(root);
-                while (queue.Count > 0)
-                {
-                    current = queue.Dequeue();
-                    if (current == null)
-                    {
-                        return root;
-                    }
-                    else if (current.Value.CompareTo(parent) == 0)
-                    {
-                        return current;
-                    }
+            longestPath.Reverse();
+            return longestPath;
+        }
 
-                    foreach (var child in current.Children)
+        private IEnumerable<Node> QueueHelper(string condition)
+        {
+            var collection = new List<Node>();
+
+            Queue<Node> queue = new Queue<Node>();
+            Node current = null;
+            queue.Enqueue(root);
+            while (queue.Count > 0)
+            {
+                current = queue.Dequeue();
+                if (condition == "middle")
+                {
+                    if (current.Children.Count > 0 && current.Parent != null)
                     {
-                        queue.Enqueue(child);
+                        collection.Add(current);
+                    }
+                }
+                else if (condition == "leaf")
+                {
+                    if (current.Children.Count == 0)
+                    {
+                        collection.Add(current);
                     }
                 }
 
-                return root;
+                foreach (var child in current.Children)
+                {
+                    queue.Enqueue(child);
+                }
             }
 
-            private void Link(Node current, T value)
+            return collection;
+        }
+
+        public IEnumerable<T> FindMiddle()
+        {
+            string condition = "middle";
+            var list = QueueHelper(condition).Select(x => x.Value);
+            return list.OrderBy(x => x);
+        }
+
+        public IEnumerable<T> FindLeafs()
+        {
+            string condition = "leaf";
+            var list = QueueHelper(condition).Select(x => x.Value);
+            return list;//.OrderBy(x => x);
+        }
+
+        public void Insert(T value, T parent)
+        {
+            var node = Contains(this.root, parent);
+            if (node == null)
             {
-                var child = new Node(value);
-                child.Parent = current;
-                current.Children.Add(child);
+                this.rootValue = parent;
+                this.current = new Node(parent);
+                this.root = current;
+                Link(current, value);
             }
+            else
+            {
+                Link(node, value);
+            }
+        }
+
+        private Node Contains(Node root, T parent)
+        {
+            Queue<Node> queue = new Queue<Node>();
+            Node current = null;
+            queue.Enqueue(root);
+            while (queue.Count > 0)
+            {
+                current = queue.Dequeue();
+                if (current == null)
+                {
+                    return root;
+                }
+                else if (current.Value.CompareTo(parent) == 0)
+                {
+                    return current;
+                }
+
+                foreach (var child in current.Children)
+                {
+                    queue.Enqueue(child);
+                }
+            }
+
+            return root;
+        }
+
+        private void Link(Node current, T value)
+        {
+            var child = new Node(value);
+            child.Parent = current;
+            current.Children.Add(child);
         }
     }
 }
+
