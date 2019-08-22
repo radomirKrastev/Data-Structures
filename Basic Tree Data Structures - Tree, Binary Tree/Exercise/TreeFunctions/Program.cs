@@ -22,6 +22,8 @@ namespace TreeFunctions
             tree.Print();
             Console.WriteLine(string.Join(" ", tree.FindLeafs()));
             Console.WriteLine(string.Join(" ", tree.FindMiddle()));
+            Console.WriteLine(string.Join(" ", tree.LongestPath()));
+            Console.WriteLine(tree.DeepestNode());
         }
 
         public class Tree<T> where T : IComparable<T>
@@ -58,10 +60,49 @@ namespace TreeFunctions
                     Print(indent + 1, child);
                 }
             }
-            
-            public IEnumerable<T> FindMiddle()
+
+            public T DeepestNode()
             {
-                var leafs = new List<T>();
+                var collection = LongestPath();
+                var deepestNode = collection.Last();
+                return deepestNode;
+            }
+
+            public IEnumerable<T> LongestPath()
+            {
+                var longestPath = new List<T>();
+                var deepestNodeCount = int.MinValue;
+                var leafs = QueueHelper("leaf");
+
+                foreach (var leaf in leafs)
+                {   
+                    var counter = 0;
+                    Queue<Node> queue = new Queue<Node>();
+                    var current = leaf;
+                    var collection = new List<T>() { current.Value };
+                    queue.Enqueue(current);
+                    while (queue.Count > 0 && current.Parent!=null)
+                    {
+                        counter++;
+                        current = queue.Dequeue().Parent;
+                        collection.Add(current.Value);
+                        queue.Enqueue(current);
+                    }
+
+                    if (counter > deepestNodeCount)
+                    {
+                        longestPath = collection;
+                        deepestNodeCount = counter;
+                    }
+                }
+
+                longestPath.Reverse();
+                return longestPath;
+            }
+
+            private IEnumerable<Node> QueueHelper(string condition)
+            {
+                var collection = new List<Node>();
 
                 Queue<Node> queue = new Queue<Node>();
                 Node current = null;
@@ -69,9 +110,19 @@ namespace TreeFunctions
                 while (queue.Count > 0)
                 {
                     current = queue.Dequeue();
-                    if (current.Children.Count > 0 && current.Parent!=null)
+                    if (condition == "middle")
                     {
-                        leafs.Add(current.Value);
+                        if (current.Children.Count > 0 && current.Parent != null)
+                        {
+                            collection.Add(current);
+                        }
+                    }
+                    else if(condition == "leaf")
+                    {
+                        if (current.Children.Count == 0)
+                        {
+                            collection.Add(current);
+                        }
                     }
 
                     foreach (var child in current.Children)
@@ -80,31 +131,21 @@ namespace TreeFunctions
                     }
                 }
 
-                return leafs.OrderBy(x => x);
+                return collection;
+            }
+
+            public IEnumerable<T> FindMiddle()
+            {
+                string condition = "middle";
+                var list = QueueHelper(condition).Select(x=>x.Value);
+                return list.OrderBy(x=>x);
             }
 
             public IEnumerable<T> FindLeafs()
             {
-                var leafs = new List<T>();
-
-                Queue<Node> queue = new Queue<Node>();
-                Node current = null;
-                queue.Enqueue(root);
-                while (queue.Count > 0)
-                {
-                    current = queue.Dequeue();
-                    if (current.Children.Count==0)
-                    {
-                        leafs.Add(current.Value);
-                    }
-
-                    foreach (var child in current.Children)
-                    {
-                        queue.Enqueue(child);
-                    }
-                }
-
-                return leafs.OrderBy(x=>x);
+                string condition = "leaf";
+                var list = QueueHelper(condition).Select(x=>x.Value);
+                return list;//.OrderBy(x => x);
             }
 
             public void Insert(T value, T parent)
