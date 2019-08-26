@@ -16,7 +16,8 @@ public class Program
         }
 
         int sum = int.Parse(Console.ReadLine());
-        tree.AllPathsEqualToSum(sum);
+        //tree.AllPathsEqualToSum(sum);
+        tree.AllSubtreesEqualToSum(sum);
     }
 
     public class Tree<T> where T : IComparable<T>
@@ -54,6 +55,55 @@ public class Program
             }
         }
 
+        public void AllSubtreesEqualToSum(int sum)
+        {
+            Console.WriteLine("Subtrees of sum " + sum + ":");
+            var list = new List<Node>();
+
+            Queue<Node> queue = new Queue<Node>();
+            Node current = null;
+            queue.Enqueue(this.root);
+            while (queue.Count > 0)
+            {
+                current = queue.Dequeue();
+                var currentSum = 0;
+                FindSumOfSubtree(this.root, list, sum, currentSum);
+
+                foreach (var node in list)
+                {
+                    PrintSubTree(node);
+                    Console.Write(Environment.NewLine);
+                }                
+            }
+        }
+
+        private void PrintSubTree (Node root)
+        {
+            Console.Write(root.Value);
+            foreach (var child in root.Children)
+            {
+                Console.Write(" ");
+                PrintSubTree(child);
+            }
+        }
+
+        private int FindSumOfSubtree(Node root, List<Node> collection, int sum, int currentSum)
+        {
+            currentSum = int.Parse(root.Value.ToString());
+
+            foreach (var child in root.Children)
+            {
+                currentSum += FindSumOfSubtree(child, collection, sum, currentSum);
+            }
+
+            if (currentSum == sum)
+            {
+                collection.Add(root);
+            }
+
+            return currentSum;
+        }
+
         public void AllPathsEqualToSum(int sum)
         {
             Console.WriteLine("Paths of sum " + sum + ":");
@@ -83,7 +133,7 @@ public class Program
             return;
         }
 
-        private IEnumerable<Node> SumHelper(Node root, List <Node> collection)
+        private IEnumerable<Node> SumHelper(Node root, List<Node> collection)
         {
             if (root.Children.Count == 0)
             {
