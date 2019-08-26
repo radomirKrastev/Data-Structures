@@ -13,16 +13,9 @@ public class Program
         {
             var edge = Console.ReadLine().Split().Select(int.Parse).ToArray();
             tree.Insert(edge[1], edge[0]);
-
-            Console.WriteLine();
         }
 
-        tree.Print();
-        Console.WriteLine(string.Join(" ", tree.FindLeafs()));
-        Console.WriteLine(string.Join(" ", tree.FindMiddle()));
-        Console.WriteLine(string.Join(" ", tree.LongestPath()));
-        Console.WriteLine(tree.DeepestNode());
-        var sum = int.Parse(Console.ReadLine());
+        int sum = int.Parse(Console.ReadLine());
         tree.AllPathsEqualToSum(sum);
     }
 
@@ -63,7 +56,9 @@ public class Program
 
         public void AllPathsEqualToSum(int sum)
         {
-            var leafs = QueueHelper("leaf");
+            Console.WriteLine("Paths of sum " + sum + ":");
+            var list = new List<Node>();
+            var leafs = SumHelper(this.root, list);
 
             foreach (var leaf in leafs)
             {
@@ -78,7 +73,7 @@ public class Program
                     queue.Enqueue(current);
                 }
 
-                if (collection.Sum()==sum)
+                if (collection.Sum() == sum)
                 {
                     collection.Reverse();
                     Console.WriteLine(string.Join(" ", collection));
@@ -88,10 +83,22 @@ public class Program
             return;
         }
 
-        //private IEnumerable<T> AllPaths (int sum, List<List<T>> allPaths, Node root, List<T> path)
-        //{
-        //    if(path.Sum())
-        //}
+        private IEnumerable<Node> SumHelper(Node root, List <Node> collection)
+        {
+            if (root.Children.Count == 0)
+            {
+                collection.Add(root);
+            }
+            else
+            {
+                foreach (var child in root.Children)
+                {
+                    SumHelper(child, collection);
+                }
+            }
+
+            return collection;
+        }
 
         public T DeepestNode()
         {
@@ -177,7 +184,7 @@ public class Program
         {
             string condition = "leaf";
             var list = QueueHelper(condition).Select(x => x.Value);
-            return list;//.OrderBy(x => x);
+            return list.OrderBy(x => x);
         }
 
         public void Insert(T value, T parent)
