@@ -17,7 +17,7 @@ public class Program
 
         int sum = int.Parse(Console.ReadLine());
         //tree.AllPathsEqualToSum(sum);
-        tree.AllSubtreesEqualToSum(sum);
+        //tree.AllSubtreesEqualToSum(sum);
     }
 
     public class Tree<T> where T : IComparable<T>

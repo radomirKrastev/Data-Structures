@@ -52,7 +52,7 @@ public class BinarySearchTree<T> where T : IComparable<T>
 
         Node parent = null;
         Node current = this.root;
-        
+
         while (current != null)
         {
             var compare = value.CompareTo(current.Value);
@@ -113,6 +113,32 @@ public class BinarySearchTree<T> where T : IComparable<T>
         return false;
     }
 
+    public void DeleteMax()
+    {
+        if (this.root == null)
+        {
+            throw new InvalidOperationException();
+        }
+
+        Node parent = null;
+        Node max = this.root;
+
+        while (max.Right != null)
+        {
+            parent = max;
+            max = max.Right;
+        }
+
+        if (parent == null)
+        {
+            this.root = max.Left;
+        }
+        else
+        {
+            parent.Right = max.Left;
+        }
+    }
+
     public void DeleteMin()
     {
         if (this.root == null)
@@ -136,7 +162,7 @@ public class BinarySearchTree<T> where T : IComparable<T>
         else
         {
             parent.Left = min.Right;
-        }        
+        }
     }
 
     public BinarySearchTree<T> Search(T item)
@@ -159,7 +185,7 @@ public class BinarySearchTree<T> where T : IComparable<T>
         }
 
         return null;
-    }    
+    }
 
     public IEnumerable<T> Range(T startRange, T endRange)
     {
@@ -168,9 +194,9 @@ public class BinarySearchTree<T> where T : IComparable<T>
         return queue;
     }
 
-    private void Range (Node node, Queue<T> queue, T startRange, T endRange)
+    private void Range(Node node, Queue<T> queue, T startRange, T endRange)
     {
-        if(node == null)
+        if (node == null)
         {
             return;
         }
@@ -183,7 +209,7 @@ public class BinarySearchTree<T> where T : IComparable<T>
             Range(node.Left, queue, startRange, endRange);
         }
 
-        if(lowerRange<=0 && higherRange >= 0)
+        if (lowerRange <= 0 && higherRange >= 0)
         {
             queue.Enqueue(node.Value);
         }
@@ -217,14 +243,20 @@ public class Launcher
     public static void Main(string[] args)
     {
         var BST = new BinarySearchTree<int>();
-        BST.Insert(6);
-        BST.Insert(7);
+        BST.Insert(1);
+        BST.Insert(3);
         BST.Insert(4);
         BST.Insert(5);
-        BST.Insert(3);
+        BST.Insert(8);
+        BST.Insert(9);
+        BST.Insert(10);
+        BST.Insert(37);
+        BST.Insert(39);
+        BST.Insert(45);
         Console.WriteLine();
         BST.EachInOrder(Console.WriteLine);
-        BinarySearchTree<int> search = BST.Search(4);
-        search.EachInOrder(Console.WriteLine);
+        BST.DeleteMax();
+        BST.EachInOrder(Console.WriteLine);
+        //search.EachInOrder(Console.WriteLine);
     }
 }
