@@ -214,7 +214,31 @@ public class BinarySearchTree<T> : IBinarySearchTree<T> where T : IComparable
 
     public int Rank(T element)
     {
-        throw new NotImplementedException();
+        var list = new List<T>();
+        Rank(this.root, element, list);
+        return list.Count;
+    }
+
+    private void Rank (Node root, T element, List<T> list)
+    {
+        if (root == null)
+        {
+            return;
+        }
+
+        var compare = element.CompareTo(root.Value);
+        if (compare < 0)
+        {
+            Rank(root.Left, element, list);
+        }
+        else if (compare > 0)
+        {            
+            Rank(root.Left, element,list);
+            Rank(root.Right, element, list);
+            list.Add(root.Value);
+        }
+
+        return;
     }
 
     public T Select(int rank)
@@ -251,18 +275,17 @@ public class Launcher
     {
         BinarySearchTree<int> bst = new BinarySearchTree<int>();
 
-        bst.Insert(10);
-        bst.Insert(5);
-        bst.Insert(3);
-        bst.Insert(1);
-        bst.Insert(4);
-        bst.Insert(8);
-        bst.Insert(9);
-        bst.Insert(37);
-        bst.Insert(39);
-        bst.Insert(45);
-        bst.Count();
+        //bst.Insert(10);
+        //bst.Insert(5);
+        //bst.Insert(3);
+        //bst.Insert(1);
+        //bst.Insert(4);
+        //bst.Insert(8);
+        //bst.Insert(9);
+        //bst.Insert(37);
+        //bst.Insert(39);
+        //bst.Insert(45);
+        int rank = bst.Rank(8);
         bst.EachInOrder(Console.WriteLine);
-
     }
 }
