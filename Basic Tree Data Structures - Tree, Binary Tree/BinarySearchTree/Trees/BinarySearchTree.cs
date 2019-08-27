@@ -113,6 +113,26 @@ public class BinarySearchTree<T> where T : IComparable<T>
         return false;
     }
 
+    //public int Count()
+    //{
+    //    List<int> counter = new List<int>();
+    //    Count(this.root, counter);        
+    //    return counter.Count;
+    //}
+
+    //private void Count(Node root, List<int> counter)
+    //{
+    //    if (root == null)
+    //    {
+    //        return;
+    //    }
+
+    //    Count(root.Left, counter);
+    //    Count(root.Right, counter);
+    //    counter.Add(1);
+    //    return;
+    //}
+
     public void DeleteMax()
     {
         if (this.root == null)
@@ -243,20 +263,10 @@ public class Launcher
     public static void Main(string[] args)
     {
         var BST = new BinarySearchTree<int>();
-        BST.Insert(1);
-        BST.Insert(3);
-        BST.Insert(4);
-        BST.Insert(5);
-        BST.Insert(8);
-        BST.Insert(9);
-        BST.Insert(10);
-        BST.Insert(37);
-        BST.Insert(39);
-        BST.Insert(45);
         Console.WriteLine();
-        BST.EachInOrder(Console.WriteLine);
-        BST.DeleteMax();
-        BST.EachInOrder(Console.WriteLine);
+        //BST.EachInOrder(Console.WriteLine);
+        //BST.DeleteMax();
+        //BST.EachInOrder(Console.WriteLine);
         //search.EachInOrder(Console.WriteLine);
     }
 }
