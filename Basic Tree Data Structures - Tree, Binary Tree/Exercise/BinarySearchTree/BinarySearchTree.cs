@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class BinarySearchTree<T> : IBinarySearchTree<T> where T : IComparable
 {
@@ -227,7 +228,7 @@ public class BinarySearchTree<T> : IBinarySearchTree<T> where T : IComparable
         }
 
         var compare = element.CompareTo(root.Value);
-        if (compare < 0)
+        if (compare <= 0)
         {
             Rank(root.Left, element, list);
         }
@@ -243,7 +244,30 @@ public class BinarySearchTree<T> : IBinarySearchTree<T> where T : IComparable
 
     public T Select(int rank)
     {
-        throw new NotImplementedException();
+        var list =new List<T>();
+        Select(this.root, list, rank);
+        return list.First();
+    }
+
+    private void Select(Node root, List<T> list, int rank)
+    {
+        if (root == null)
+        {
+            return;
+        }
+
+        var counter = new List<T>();
+        Rank(this.root, root.Value, counter);
+        if (counter.Count == rank)
+        {
+            list.Add(root.Value);
+            return;
+        }
+        else
+        {
+            Select(root.Left, list, rank);
+            Select(root.Right, list, rank);
+        }
     }
 
     public T Ceiling(T element)
@@ -275,17 +299,21 @@ public class Launcher
     {
         BinarySearchTree<int> bst = new BinarySearchTree<int>();
 
-        //bst.Insert(10);
-        //bst.Insert(5);
-        //bst.Insert(3);
-        //bst.Insert(1);
-        //bst.Insert(4);
-        //bst.Insert(8);
-        //bst.Insert(9);
-        //bst.Insert(37);
-        //bst.Insert(39);
-        //bst.Insert(45);
-        int rank = bst.Rank(8);
+        bst.Insert(10);
+        bst.Insert(5);
+        bst.Insert(3);
+        bst.Insert(1);
+        bst.Insert(4);
+        bst.Insert(8);
+        bst.Insert(9);
+        bst.Insert(37);
+        bst.Insert(39);
+        bst.Insert(45);
+        int rk = bst.Rank(45);
         bst.EachInOrder(Console.WriteLine);
+        Console.WriteLine();
+        int rank = bst.Select(9);
+        Console.WriteLine(rank);
+        Console.WriteLine(rk);
     }
 }
