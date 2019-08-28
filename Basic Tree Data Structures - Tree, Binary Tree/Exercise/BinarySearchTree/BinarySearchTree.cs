@@ -220,7 +220,7 @@ public class BinarySearchTree<T> : IBinarySearchTree<T> where T : IComparable
         return list.Count;
     }
 
-    private void Rank (Node root, T element, List<T> list)
+    private void Rank(Node root, T element, List<T> list)
     {
         if (root == null)
         {
@@ -233,8 +233,8 @@ public class BinarySearchTree<T> : IBinarySearchTree<T> where T : IComparable
             Rank(root.Left, element, list);
         }
         else if (compare > 0)
-        {            
-            Rank(root.Left, element,list);
+        {
+            Rank(root.Left, element, list);
             Rank(root.Right, element, list);
             list.Add(root.Value);
         }
@@ -244,7 +244,7 @@ public class BinarySearchTree<T> : IBinarySearchTree<T> where T : IComparable
 
     public T Select(int rank)
     {
-        var list =new List<T>();
+        var list = new List<T>();
         Select(this.root, list, rank);
         return list.First();
     }
@@ -272,12 +272,110 @@ public class BinarySearchTree<T> : IBinarySearchTree<T> where T : IComparable
 
     public T Ceiling(T element)
     {
-        throw new NotImplementedException();
+        if (this.root == null || Contains(element) == false)
+        {
+            throw new InvalidOperationException();
+        }
+
+        Node parent = this.root;
+        Node root = null;
+        Node elementNode = this.root;
+        var comparer = element.CompareTo(elementNode.Value);
+
+        while (elementNode.Value.CompareTo(element) != 0 || elementNode.Value.CompareTo(element) != 0)
+        {
+            if (element.CompareTo(elementNode.Value) < 0)
+            {
+                root = parent;
+                parent = elementNode;
+                elementNode = elementNode.Left;
+            }
+
+            else if (element.CompareTo(elementNode.Value) > 0)
+            {
+                root = parent;
+                parent = elementNode;
+                elementNode = elementNode.Right;
+            }
+        }
+
+        if (elementNode.Right != null)
+        {
+            return elementNode.Right.Value;
+        }
+        else if (elementNode.Value.CompareTo(parent.Value) < 0)
+        {
+            return parent.Value;
+        }
+        else if (elementNode.Value.CompareTo(parent.Value) > 0 && elementNode.Value.CompareTo(this.root.Value) < 0)
+        {
+            return this.root.Value;
+        }
+        else
+        {
+            throw new InvalidOperationException();
+        }
     }
 
     public T Floor(T element)
     {
-        throw new NotImplementedException();
+        if (this.root == null || Contains(element) == false)
+        {
+            throw new InvalidOperationException();
+        }
+                
+        Node elementNode = this.root;
+        Node current = this.root;
+        while (current.Left != null)
+        {
+            current = current.Left;
+        }
+
+        T value = current.Value;
+        var comparer = element.CompareTo(elementNode.Value);
+
+        while (elementNode.Value.CompareTo(element) != 0 || elementNode.Value.CompareTo(element) != 0)
+        {
+            bool valueCondition = value.CompareTo(elementNode.Value) < 0 && elementNode.Value.CompareTo(element) < 0;
+
+            if (element.CompareTo(elementNode.Value) < 0)
+            {
+                if (valueCondition)
+                {
+                    value = elementNode.Value;
+                }
+
+                elementNode = elementNode.Left;
+            }
+
+            else if (element.CompareTo(elementNode.Value) > 0)
+            {
+                if (valueCondition)
+                {
+                    value = elementNode.Value;
+                }
+
+                elementNode = elementNode.Right;
+            }
+        }
+
+        if (elementNode.Left != null)
+        {
+            var floorNode = elementNode.Left;
+            while (floorNode.Right != null)
+            {
+                floorNode = floorNode.Right;
+            }
+
+            return floorNode.Value;
+        }
+
+        if (value.CompareTo(element) == 0)
+        {
+            throw new InvalidOperationException();
+        }
+
+        return value;
     }
 
     private class Node
@@ -299,21 +397,31 @@ public class Launcher
     {
         BinarySearchTree<int> bst = new BinarySearchTree<int>();
 
+
+
+        bst.Insert(15);
         bst.Insert(10);
-        bst.Insert(5);
-        bst.Insert(3);
-        bst.Insert(1);
-        bst.Insert(4);
         bst.Insert(8);
         bst.Insert(9);
-        bst.Insert(37);
-        bst.Insert(39);
-        bst.Insert(45);
-        int rk = bst.Rank(45);
-        bst.EachInOrder(Console.WriteLine);
+        bst.Insert(6);
+        bst.Insert(12);
+        bst.Insert(13);
+        bst.Insert(14);
+        bst.Insert(11);
+
+        //bst.Insert(10);
+        //bst.Insert(5);
+        //bst.Insert(3);
+        //bst.Insert(1);
+        //bst.Insert(4);
+        //bst.Insert(8);
+        //bst.Insert(9);
+        //bst.Insert(37);
+        //bst.Insert(39);
+        //bst.Insert(45);
         Console.WriteLine();
-        int rank = bst.Select(9);
-        Console.WriteLine(rank);
-        Console.WriteLine(rk);
+        int floor = bst.Floor(1);
+        //int ceiling = bst.Ceiling(4);
+        Console.WriteLine(floor);
     }
 }
