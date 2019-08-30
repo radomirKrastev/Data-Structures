@@ -132,7 +132,7 @@ public class BinarySearchTree<T> : IBinarySearchTree<T> where T : IComparable
     {
         if (this.root == null)
         {
-            return;
+            throw new InvalidOperationException();
         }
 
         Node current = this.root;
@@ -164,7 +164,109 @@ public class BinarySearchTree<T> : IBinarySearchTree<T> where T : IComparable
 
     public void Delete(T element)
     {
-        throw new NotImplementedException();
+        if (this.root == null || Contains(element) == false)
+        {
+            throw new InvalidOperationException();
+        }
+
+        if(this.root.Left==null && this.root.Right == null)
+        {
+            this.root = null;
+            return;
+        }
+
+        Node elementNode = FindElement(element);
+
+        if (elementNode.Right != null && elementNode.Left == null)
+        {
+            elementNode = elementNode.Right;
+
+        }
+        else if (elementNode.Left != null && elementNode.Right == null)
+        {
+            elementNode = elementNode.Left;
+        }
+        else if(elementNode.Left==null && elementNode.Right == null)
+        {
+            elementNode = null;
+        }
+        else
+        {
+            List<Node> rightSubtreeList = new List<Node>();
+            Count(elementNode.Right, rightSubtreeList);
+            Node floor = elementNode.Right;
+
+            foreach (var node in rightSubtreeList)
+            {
+                if (floor.Value.CompareTo(node.Value) > 0)
+                {
+                    floor = node;
+                }
+            }
+
+            Node rightSubtree = null;
+            rightSubtree = CopySubtree(elementNode.Right, rightSubtree, floor);
+            Node leftSubtree = null;
+            leftSubtree = CopySubtree(elementNode.Left, leftSubtree, null);
+
+            elementNode = floor;
+            elementNode.Right = rightSubtree;
+            elementNode.Left = leftSubtree;
+        }
+
+        Node current = this.root;
+        Node parent = null;
+        while (current != null)
+        {
+            if (current.Value.CompareTo(element) > 0)
+            {
+                parent = current;
+                current = current.Left;
+            }
+            else if (current.Value.CompareTo(element) < 0)
+            {
+                parent = current;
+                current = current.Right;
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        if (parent == null)
+        {
+            this.root = elementNode;
+        }
+        else
+        {
+            if (parent.Left == current)
+            {
+                parent.Left = elementNode;
+            }
+            else
+            {
+                parent.Right = elementNode;
+            }
+        }        
+    }
+
+    private Node CopySubtree(Node root, Node copiedTree, Node floor)
+    {
+        if (root == null)
+        {
+            return copiedTree;
+        }
+
+        if (root != floor)
+        {
+            copiedTree = Insert(root.Value, copiedTree);
+        }
+
+        copiedTree = CopySubtree(root.Left, copiedTree, floor);
+        copiedTree = CopySubtree(root.Right, copiedTree, floor);
+
+        return copiedTree;
     }
 
     public void DeleteMax()
@@ -195,12 +297,12 @@ public class BinarySearchTree<T> : IBinarySearchTree<T> where T : IComparable
 
     public int Count()
     {
-        List<int> counter = new List<int>();
+        List<Node> counter = new List<Node>();
         Count(this.root, counter);
         return counter.Count;
     }
 
-    private void Count(Node root, List<int> counter)
+    private void Count(Node root, List<Node> counter)
     {
         if (root == null)
         {
@@ -209,7 +311,7 @@ public class BinarySearchTree<T> : IBinarySearchTree<T> where T : IComparable
 
         Count(root.Left, counter);
         Count(root.Right, counter);
-        counter.Add(1);
+        counter.Add(root);
         return;
     }
 
@@ -246,7 +348,14 @@ public class BinarySearchTree<T> : IBinarySearchTree<T> where T : IComparable
     {
         var list = new List<T>();
         Select(this.root, list, rank);
-        return list.First();
+        if (list.Count > 0)
+        {
+            return list.First();
+        }
+        else
+        {
+            throw new InvalidOperationException();
+        }
     }
 
     private void Select(Node root, List<T> list, int rank)
@@ -337,7 +446,7 @@ public class BinarySearchTree<T> : IBinarySearchTree<T> where T : IComparable
         {
             throw new InvalidOperationException();
         }
-                
+
         Node elementNode = this.root;
         Node current = this.root;
         while (current.Left != null)
@@ -411,42 +520,53 @@ public class Launcher
     {
         BinarySearchTree<int> bst = new BinarySearchTree<int>();
 
-
-
-        bst.Insert(15);
-        bst.Insert(10);
-        bst.Insert(8);
-        bst.Insert(9);
-        bst.Insert(6);
-        bst.Insert(12);
-        bst.Insert(13);
-        bst.Insert(14);
-        bst.Insert(500);
-        bst.Insert(300);
-        bst.Insert(257);
-        bst.Insert(258);
-        bst.Insert(231);
-        bst.Insert(186);
-        bst.Insert(97);
-        bst.Insert(152);
-        bst.Insert(87);
-        bst.Insert(205);
-        bst.Insert(225);
-
+        //bst.Insert(15);
         //bst.Insert(10);
-        //bst.Insert(5);
+        //bst.Insert(8);
+        //bst.Insert(9);
+        //bst.Insert(6);
+        //bst.Insert(11);
+        //bst.Insert(12);
+        //bst.Insert(13);
+        //bst.Insert(14);
+        //bst.Insert(39);
+        //bst.Insert(37);
+        //bst.Insert(45);
+        //bst.Insert(500);
+        //bst.Insert(300);
+        //bst.Insert(257);
+        //bst.Insert(258);
+        //bst.Insert(231);
+        //bst.Insert(186);
+        //bst.Insert(97);
+        //bst.Insert(152);
+        //bst.Insert(87);
+        //bst.Insert(205);
+        //bst.Insert(225);
+
+        bst.Insert(10);
+        bst.Insert(5);
         //bst.Insert(3);
         //bst.Insert(1);
         //bst.Insert(4);
         //bst.Insert(8);
         //bst.Insert(9);
         //bst.Insert(37);
-        //bst.Insert(39);
+        bst.Insert(39);
         //bst.Insert(45);
-        Console.WriteLine();
 
-        int ceiling = bst.Ceiling(97);
+        //bst.Insert(12);
+        //bst.Insert(21);
+        //bst.Insert(5);
+        //bst.Insert(1);
+        //bst.Insert(8);
+        //bst.Insert(18);
+        Console.WriteLine();
+        bst.Delete(5);
+        //var select = bst.Select(100);
+        //Console.WriteLine(select);
+        //int ceiling = bst.Ceiling(8);
         //int ceiling = bst.Ceiling(4);
-        Console.WriteLine(ceiling);
+        //Console.WriteLine(ceiling);
     }
 }
